@@ -1,4 +1,4 @@
-<template> 바보
+<template>
   <!-- Vuetify Footer (예시) -->
   <v-footer color="secondary" dark flat elevation="0">
     <v-col cols="12" class="text-center py-6">
