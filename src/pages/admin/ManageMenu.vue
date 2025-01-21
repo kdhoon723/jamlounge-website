@@ -10,13 +10,13 @@
         <v-col cols="12" sm="12">
           <div class="d-flex flex-wrap">
             <v-chip
-              v-for="(cat, index) in categories"
-              :key="index"
+              v-for="cat in categories"
+              :key="cat.id"
               class="ma-1"
               close
-              @click:close="removeCategory(index)"
+              @click:close="removeCategory(cat.id)"
             >
-              {{ cat }}
+              {{ cat.name }}
             </v-chip>
           </div>
         </v-col>
@@ -47,9 +47,10 @@
           <v-text-field label="메뉴 이름" v-model="newName" dense outlined />
         </v-col>
         <v-col cols="12" sm="3">
+          <!-- 카테고리 목록을 Firestore에서 불러온 뒤 이름만 추출해서 사용 -->
           <v-select
             label="카테고리"
-            :items="categories"
+            :items="categories.map(cat => cat.name)"
             v-model="newCategory"
             dense
             outlined
@@ -114,7 +115,7 @@
           />
           <v-select
             label="카테고리"
-            :items="categories"
+            :items="categories.map(cat => cat.name)"
             v-model="editingItem.category"
             dense
             outlined
@@ -163,51 +164,65 @@ import { ref, onMounted } from 'vue'
 export default {
   name: 'ManageMenu',
   setup() {
-    // ----- 메뉴 상태 -----
-    const menuItems = ref([])
+    // ---------------------------
+    // 1) 카테고리 (컬렉션+문서)
+    // ---------------------------
+    const categories = ref([])
+    const newCategoryName = ref('')
 
-    // ----- 새 메뉴 정보 -----
-    const newName = ref('')
-    const newCategory = ref('커피')
-    const newPrice = ref(0)
-    const newImageUrl = ref('')
-
-    // ----- 카테고리 관리 -----
-    const categories = ref(['커피', '디저트', '식사', '주류'])
-    const newCategoryName = ref('') // 새 카테고리 이름 입력
+    // 실시간 카테고리 구독
+    const loadCategories = () => {
+      const catColRef = collection(db, 'MenuCategory') // 컬렉션 이름
+      onSnapshot(catColRef, (snapshot) => {
+        // { id, name, createdAt } 형태로 가져옴
+        categories.value = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      })
+    }
 
     // 카테고리 추가
-    const addCategory = () => {
+    const addCategory = async () => {
       if (!newCategoryName.value.trim()) {
         alert('카테고리 이름을 입력해주세요.')
         return
       }
-      // 중복 확인
-      if (categories.value.includes(newCategoryName.value.trim())) {
-        alert('이미 존재하는 카테고리입니다.')
-        return
+      try {
+        await addDoc(collection(db, 'MenuCategory'), {
+          name: newCategoryName.value.trim(),
+          createdAt: new Date()
+        })
+        newCategoryName.value = ''
+      } catch (err) {
+        console.error('카테고리 추가 오류', err)
       }
-      // 배열에 추가
-      categories.value.push(newCategoryName.value.trim())
-      // 입력값 초기화
-      newCategoryName.value = ''
     }
 
     // 카테고리 삭제
-    const removeCategory = (index) => {
+    const removeCategory = async (catId) => {
       if (!confirm('정말 이 카테고리를 삭제하시겠습니까?')) return
-      categories.value.splice(index, 1)
+      try {
+        await deleteDoc(doc(db, 'MenuCategory', catId))
+      } catch (err) {
+        console.error('카테고리 삭제 오류', err)
+      }
     }
 
-    // ----- 수정 모달 상태 -----
+    // ---------------------------
+    // 2) 메뉴
+    // ---------------------------
+    const menuItems = ref([])
+    const newName = ref('')
+    const newCategory = ref('커피') // 기본값
+    const newPrice = ref(0)
+    const newImageUrl = ref('')
+
+    // 수정 다이얼로그
     const dialogEdit = ref(false)
     const editingItem = ref(null)
 
-    // ----- 메뉴 불러오기 (실시간) -----
-    onMounted(() => {
-      loadMenus()
-    })
-
+    // 메뉴 실시간 구독
     const loadMenus = () => {
       const colRef = collection(db, 'menus')
       const q = query(colRef, orderBy('name'))
@@ -219,7 +234,7 @@ export default {
       })
     }
 
-    // ----- 새 메뉴 추가 -----
+    // 새 메뉴 추가
     const addMenuItem = async () => {
       if (!newName.value.trim()) {
         alert('메뉴 이름을 입력해주세요')
@@ -243,14 +258,15 @@ export default {
       }
     }
 
-    // ----- 메뉴 수정 -----
+    // 메뉴 수정 버튼 클릭
     const editMenu = (item) => {
-      editingItem.value = { ...item } // 객체 복사
+      editingItem.value = { ...item } // 복사
       dialogEdit.value = true
     }
 
+    // 메뉴 수정 저장
     const updateMenuItem = async () => {
-      if (!editingItem.value || !editingItem.value.id) return
+      if (!editingItem.value?.id) return
       try {
         const refDoc = doc(db, 'menus', editingItem.value.id)
         await updateDoc(refDoc, {
@@ -264,13 +280,15 @@ export default {
       } catch (err) {
         console.error('메뉴 수정 오류', err)
       }
-    {
+    }
+
+    // 수정 취소
     const cancelEdit = () => {
       dialogEdit.value = false
       editingItem.value = null
     }
 
-    // ----- 메뉴 삭제 -----
+    // 메뉴 삭제
     const deleteMenuItem = async (id) => {
       if (!confirm('정말 삭제하시겠습니까?')) return
       try {
@@ -281,20 +299,31 @@ export default {
       }
     }
 
+    // ---------------------------
+    // onMounted 시점에 불러오기
+    // ---------------------------
+    onMounted(() => {
+      loadCategories() // 카테고리 실시간 구독
+      loadMenus()      // 메뉴 실시간 구독
+    })
+
     return {
+      // 카테고리
+      categories,
+      newCategoryName,
+      addCategory,
+      removeCategory,
+
+      // 메뉴
       menuItems,
       newName,
       newCategory,
       newPrice,
       newImageUrl,
-      categories,
-      newCategoryName,
-      addCategory,
-      removeCategory,
+
+      // 수정 모달
       dialogEdit,
       editingItem,
-      loadMenus,
-      addMenuItem,
       editMenu,
       updateMenuItem,
       cancelEdit,
