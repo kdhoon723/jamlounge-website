@@ -30,7 +30,7 @@
         <v-spacer></v-spacer>
         <v-list>
           <v-list-item link @click="handleLogout">
-            <v-list-item-title class="text-white">
+            <v-list-item-title class="text-red">
               로그아웃
             </v-list-item-title>
           </v-list-item>
@@ -64,6 +64,8 @@
         adminMenus: [
           { title: '대시보드', path: '/admin' },
           { title: '메뉴 관리', path: '/admin/menu' },
+          { title: '프리오더 관리', path: '/admin/preorder' },
+          { title: '예약 관리', path: '/admin/reservation' },
           { title: '스케줄 관리', path: '/admin/schedule' },
           { title: '사진 관리', path: '/admin/pictures' }
         ]
