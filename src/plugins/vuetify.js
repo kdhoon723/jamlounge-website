@@ -1,31 +1,9 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-// 필요한 Vuetify 컴포넌트(Tree-shaking)
-import {
-  VApp,
-  VAppBar,
-  VAppBarNavIcon,
-  VMain,
-  VFooter,
-  VBtn,
-  VIcon,
-  VSpacer,
-  VContainer,
-  VRow,
-  VCol,
-  VCard,
-  VCardText,
-  VCardTitle,
-  VCardActions,
-  VImg,
-  VNavigationDrawer,
-  VList,
-  VListItem,
-  VListItemTitle,
-  VDivider
-} from 'vuetify/components'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 // 테마 컬러 (검은 배경 + 금색 포인트)
 const myCustomTheme = {
@@ -44,35 +22,12 @@ const myCustomTheme = {
 }
 
 export default createVuetify({
-  components: {
-    VApp,
-    VAppBar,
-    VAppBarNavIcon,
-    VMain,
-    VFooter,
-    VBtn,
-    VIcon,
-    VSpacer,
-    VContainer,
-    VRow,
-    VCol,
-    VCard,
-    VCardText,
-    VCardTitle,
-    VCardActions,
-    VImg,
-    VNavigationDrawer,
-    VList,
-    VListItem,
-    VListItemTitle,
-    VDivider
-  },
+  components,
+  directives,
   icons: {
     defaultSet: 'mdi',
     aliases,
-    sets: {
-      mdi
-    }
+    sets: { mdi }
   },
   theme: {
     defaultTheme: 'myCustomTheme',
