@@ -1,4 +1,5 @@
 import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css' // MDI 아이콘 폰트 CSS
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
