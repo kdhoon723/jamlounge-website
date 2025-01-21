@@ -1,20 +1,50 @@
 <template>
   <v-container class="py-4">
-    <h2 class="text-h5 mb-4" style="color: #c5a46d;">
-      메뉴 관리
-    </h2>
+    <h2 class="text-h5 mb-4" style="color: #c5a46d">메뉴 관리</h2>
 
-    <!-- 새 메뉴 등록 -->
+    <!-- 1) 카테고리 관리 영역 -->
+    <v-card outlined class="p-4 mb-4">
+      <h3 class="text-h6 mb-3">카테고리 관리</h3>
+      <v-row dense>
+        <!-- 기존에 등록된 카테고리 리스트 -->
+        <v-col cols="12" sm="12">
+          <div class="d-flex flex-wrap">
+            <v-chip
+              v-for="(cat, index) in categories"
+              :key="index"
+              class="ma-1"
+              close
+              @click:close="removeCategory(index)"
+            >
+              {{ cat }}
+            </v-chip>
+          </div>
+        </v-col>
+
+        <!-- 새 카테고리 추가 입력 -->
+        <v-col cols="12" sm="4">
+          <v-text-field
+            label="새 카테고리 이름"
+            v-model="newCategoryName"
+            dense
+            outlined
+          />
+        </v-col>
+        <v-col cols="12" sm="2">
+          <v-btn color="primary" class="mt-2" @click="addCategory">
+            추가
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
+    <!-- // 카테고리 관리 영역 -->
+
+    <!-- 2) 새 메뉴 등록 -->
     <v-card outlined class="p-4 mb-4">
       <h3 class="text-h6 mb-3">새 메뉴 추가</h3>
       <v-row dense>
         <v-col cols="12" sm="3">
-          <v-text-field
-            label="메뉴 이름"
-            v-model="newName"
-            dense
-            outlined
-          />
+          <v-text-field label="메뉴 이름" v-model="newName" dense outlined />
         </v-col>
         <v-col cols="12" sm="3">
           <v-select
@@ -43,18 +73,12 @@
           />
         </v-col>
       </v-row>
-      <v-btn color="primary" class="mt-2" @click="addMenuItem">
-        추가
-      </v-btn>
+      <v-btn color="primary" class="mt-2" @click="addMenuItem"> 추가 </v-btn>
     </v-card>
 
-    <!-- 메뉴 목록 -->
+    <!-- 3) 메뉴 목록 -->
     <v-row>
-      <v-col
-        v-for="(item, idx) in menuItems"
-        :key="item.id"
-        cols="12"
-      >
+      <v-col v-for="(item, idx) in menuItems" :key="item.id" cols="12">
         <v-card outlined class="px-3 py-2 mb-3">
           <div class="d-flex align-center justify-space-between">
             <div>
@@ -76,15 +100,10 @@
       </v-col>
     </v-row>
 
-    <!-- 수정 다이얼로그 -->
-    <v-dialog
-      v-model="dialogEdit"
-      max-width="600px"
-    >
+    <!-- 4) 수정 다이얼로그 -->
+    <v-dialog v-model="dialogEdit" max-width="600px">
       <v-card>
-        <v-card-title>
-          메뉴 수정
-        </v-card-title>
+        <v-card-title> 메뉴 수정 </v-card-title>
         <v-card-text>
           <v-text-field
             label="메뉴 이름"
@@ -119,12 +138,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="updateMenuItem">
-            저장
-          </v-btn>
-          <v-btn color="grey" @click="cancelEdit">
-            취소
-          </v-btn>
+          <v-btn color="primary" @click="updateMenuItem"> 저장 </v-btn>
+          <v-btn color="grey" @click="cancelEdit"> 취소 </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -148,19 +163,47 @@ import { ref, onMounted } from 'vue'
 export default {
   name: 'ManageMenu',
   setup() {
+    // ----- 메뉴 상태 -----
     const menuItems = ref([])
+
+    // ----- 새 메뉴 정보 -----
     const newName = ref('')
     const newCategory = ref('커피')
     const newPrice = ref(0)
     const newImageUrl = ref('')
 
-    // 수정 모달 상태
+    // ----- 카테고리 관리 -----
+    const categories = ref(['커피', '디저트', '식사', '주류'])
+    const newCategoryName = ref('') // 새 카테고리 이름 입력
+
+    // 카테고리 추가
+    const addCategory = () => {
+      if (!newCategoryName.value.trim()) {
+        alert('카테고리 이름을 입력해주세요.')
+        return
+      }
+      // 중복 확인
+      if (categories.value.includes(newCategoryName.value.trim())) {
+        alert('이미 존재하는 카테고리입니다.')
+        return
+      }
+      // 배열에 추가
+      categories.value.push(newCategoryName.value.trim())
+      // 입력값 초기화
+      newCategoryName.value = ''
+    }
+
+    // 카테고리 삭제
+    const removeCategory = (index) => {
+      if (!confirm('정말 이 카테고리를 삭제하시겠습니까?')) return
+      categories.value.splice(index, 1)
+    }
+
+    // ----- 수정 모달 상태 -----
     const dialogEdit = ref(false)
     const editingItem = ref(null)
 
-    const categories = ref(['커피', '디저트', '식사', '주류'])
-
-    // 메뉴 불러오기 (실시간)
+    // ----- 메뉴 불러오기 (실시간) -----
     onMounted(() => {
       loadMenus()
     })
@@ -176,7 +219,7 @@ export default {
       })
     }
 
-    // 새 메뉴 추가
+    // ----- 새 메뉴 추가 -----
     const addMenuItem = async () => {
       if (!newName.value.trim()) {
         alert('메뉴 이름을 입력해주세요')
@@ -200,13 +243,12 @@ export default {
       }
     }
 
-    // 수정 버튼
+    // ----- 메뉴 수정 -----
     const editMenu = (item) => {
-      editingItem.value = { ...item } // 복사
+      editingItem.value = { ...item } // 객체 복사
       dialogEdit.value = true
     }
 
-    // 수정 저장
     const updateMenuItem = async () => {
       if (!editingItem.value || !editingItem.value.id) return
       try {
@@ -222,15 +264,13 @@ export default {
       } catch (err) {
         console.error('메뉴 수정 오류', err)
       }
-    }
-
-    // 취소
+    {
     const cancelEdit = () => {
       dialogEdit.value = false
       editingItem.value = null
     }
 
-    // 삭제
+    // ----- 메뉴 삭제 -----
     const deleteMenuItem = async (id) => {
       if (!confirm('정말 삭제하시겠습니까?')) return
       try {
@@ -247,9 +287,12 @@ export default {
       newCategory,
       newPrice,
       newImageUrl,
+      categories,
+      newCategoryName,
+      addCategory,
+      removeCategory,
       dialogEdit,
       editingItem,
-      categories,
       loadMenus,
       addMenuItem,
       editMenu,
@@ -262,6 +305,5 @@ export default {
 </script>
 
 <style scoped>
-/* (Optional) 추가 스타일 */
-
+/* 필요 시 스타일 추가 */
 </style>
