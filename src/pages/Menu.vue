@@ -1,7 +1,7 @@
 <template>
   <v-container class="py-10">
     <!-- 페이지 제목 -->
-    <h2 class="text-h4 mb-6" style="color: #c5a46d;">Menu (Firestore 연동)</h2>
+    <h2 class="text-h4 mb-6" style="color: #c5a46d;">Menu</h2>
     <p class="mb-4" style="color: #f2f2e9;">
       다양한 메뉴들을 카테고리 별로 확인해보세요.
     </p>
@@ -42,11 +42,11 @@
         lg="3"
       >
         <v-card color="#2b2b2b" dark class="mb-4">
-          <!-- 이미지가 있을 경우 표시 -->
+          <!-- 이미지가 있을 경우 표시 (aspect-ratio=1로 정사각형) -->
           <v-img
             v-if="item.imageUrl"
             :src="item.imageUrl"
-            height="150"
+            :aspect-ratio="1"
             cover
           />
           <v-card-title>{{ item.name }}</v-card-title>
@@ -76,16 +76,13 @@ export default {
   name: 'Menu',
   setup() {
     // 1) 카테고리 목록 (Firestore -> MenuCategory)
-    const categoryList = ref([]) // [{id, name, order, ...}, ...]
+    const categoryList = ref([])
     // 현재 선택된 카테고리 (기본 'All')
     const currentCategory = ref('All')
 
     // 2) 메뉴 목록 (Firestore -> menus)
     const menuItems = ref([])
 
-    // ---------------------------
-    // Firestore 구독 함수
-    // ---------------------------
     // (A) 카테고리 구독
     const fetchCategories = () => {
       const catCol = collection(db, 'MenuCategory')
@@ -93,7 +90,7 @@ export default {
       onSnapshot(q, snapshot => {
         categoryList.value = snapshot.docs.map(doc => ({
           id: doc.id,
-          ...doc.data() // { name, order, createdAt, ...}
+          ...doc.data()
         }))
       })
     }
@@ -115,9 +112,7 @@ export default {
       fetchMenuData()
     })
 
-    // ---------------------------
-    // 3) 필터링 (현재 카테고리)
-    // ---------------------------
+    // 3) 카테고리 필터링
     const filteredMenu = computed(() => {
       if (currentCategory.value === 'All') {
         return menuItems.value
@@ -128,9 +123,7 @@ export default {
       }
     })
 
-    // ---------------------------
     // 가격 표시 포맷
-    // ---------------------------
     const formatPrice = (val) => {
       if (typeof val === 'number') {
         return `${val.toLocaleString()}원`
@@ -150,5 +143,5 @@ export default {
 </script>
 
 <style scoped>
-/* 필요한 경우 추가 스타일 */
+/* 추가 스타일: 카드나 텍스트 등 조정 가능 */
 </style>
