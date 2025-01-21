@@ -264,7 +264,7 @@ export default {
       } catch (err) {
         console.error('메뉴 수정 오류', err)
       }
-    {
+    }
     const cancelEdit = () => {
       dialogEdit.value = false
       editingItem.value = null
