@@ -13,6 +13,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 3000
+    port: 3000,
+    allowedHosts: ['kdhms.kro.kr'], // 도메인 허용 추가
   }
 })
