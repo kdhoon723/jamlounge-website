@@ -1,7 +1,7 @@
 <template>
     <v-container class="py-10">
       <h2 class="text-h5 mb-6" style="color: #c5a46d;">
-        Manage Reservation Info 메롱메롱
+        Manage Reservation Info 메롱메롱메롱
       </h2>
   
       <!-- 목록 표시 -->
