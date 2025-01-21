@@ -1,4 +1,4 @@
-<template>
+<template> 바보
   <!-- Vuetify Footer (예시) -->
   <v-footer color="secondary" dark flat elevation="0">
     <v-col cols="12" class="text-center py-6">
@@ -39,7 +39,7 @@ export default {
 
 <!-- scoped 스타일 -->
 <style scoped>
-/* (1) footer 자체 바탕색은 Vuetify에서 color="secondary" dark로 설정했다고 가정. 
+/* (1) footer 자체 바탕색은 Vuetify에서 color="secondary" dark로 설정했다고 가정.
      필요 시 background-color: #303030; 처리를 해도 무방. */
 
 /* (2) 소셜 아이콘 관련 코드 - 사용자가 제공한 CSS 통합 */
