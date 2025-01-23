@@ -13,17 +13,6 @@
       </div>
     </div>
 
-    <!-- 4) 아코디언 갤러리 섹션 (기존 코드) -->
-    <div class="container gallery-section">
-      <div class="gallery-wrap">
-        <div class="item item-1"></div>
-        <div class="item item-2"></div>
-        <div class="item item-3"></div>
-        <div class="item item-4"></div>
-        <div class="item item-5"></div>
-      </div>
-    </div>
-
     <div class="welcome-section">
       <h1>Welcome to Jamlounge</h1>
       <p class="welcome-text">
@@ -142,63 +131,7 @@ export default {
   color: #f2f2e9;
 }
 
-/* ========== 4) 아코디언 갤러리 섹션 ========== */
-.gallery-section {
-  padding: 75px 0;
-  margin: 0 auto;
-  width: 1800px;
 
-  h1 {
-    position: relative;
-    margin-bottom: 45px;
-    font-family: 'Oswald', sans-serif;
-    font-size: 44px;
-    text-transform: uppercase;
-    color: #424242;
-    text-align: center;
-  }
-}
-
-.gallery-wrap {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 70vh;
-}
-
-.item {
-  flex: 1;
-  height: 100%;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  transition: flex 0.8s ease;
-
-  &:hover {
-    flex: 7;
-  }
-}
-
-/* 배경 이미지들 (원하시면 변경) */
-.item-1 {
-  background-image: url('src/assets/home/main1.webp');
-}
-
-.item-2 {
-  background-image: url('src/assets/home/main2.webp');
-}
-
-.item-3 {
-  background-image: url('src/assets/home/main3.webp');
-}
-
-.item-4 {
-  background-image: url('src/assets/home/main4.webp');
-}
-
-.item-5 {
-  background-image: url('src/assets/home/main5.webp');
-}
 
 /* ========== 2) Welcome to Jamlounge 섹션 ========== */
 .welcome-section {

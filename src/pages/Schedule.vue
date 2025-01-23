@@ -1,6 +1,6 @@
 <template>
     <v-container class="py-10">
-      <h2 class="text-h4 mb-4" style="color: #c5a46d;">Schedule (Firestore)</h2>
+      <h2 class="text-h4 mb-4" style="color: #c5a46d;">Schedule</h2>
       <p style="color: #f2f2e9;">
         공연, 특선메뉴, 대관 이벤트 등의 일정을 확인해 보세요.
       </p>
@@ -26,6 +26,7 @@
         </v-col>
       </v-row>
     </v-container>
+
   </template>
   
   <script>
