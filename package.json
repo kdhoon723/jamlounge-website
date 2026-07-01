@@ -19,5 +19,12 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "sass": "^1.83.1",
     "vite": "^6.0.5"
-  }
+  },
+  "description": "Vue/Firebase website for JamLounge venue pages, reservations, schedules, and admin content management",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kdhoon723/jamlounge-website.git"
+  },
+  "homepage": "https://github.com/kdhoon723/jamlounge-website#readme"
 }
