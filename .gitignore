@@ -29,3 +29,11 @@ dist-ssr
 *.sw?
 
 .firebase/
+.firebaserc
+AGENTS.md
+CLAUDE.md
+AGENTS.local.md
+CLAUDE.local.md
+.claude/
+.codex/
+.omx/
